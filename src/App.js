@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "./App.css";
 import AlphabetsGame from "./components/AlphabetsGame";
 import NumbersGame from "./components/NumbersGame";
+import NumbersDropGame from "./components/NumbersDropGame";
 import PhonicsGame from "./components/PhonicsGame";
 
 function App() {
@@ -29,6 +30,12 @@ function App() {
             onClick={() => setActiveTab("numbers")}
           >
             🔢 Numbers
+          </button>
+          <button
+            className={`nav-button ${activeTab === "numbersdrop" ? "active" : ""}`}
+            onClick={() => setActiveTab("numbersdrop")}
+          >
+            🎲 Numbers Drop
           </button>
           <button
             className={`nav-button ${activeTab === "phonics" ? "active" : ""}`}
@@ -63,6 +70,14 @@ function App() {
               </div>
               <div
                 className="feature-card"
+                onClick={() => setActiveTab("numbersdrop")}
+              >
+                <div className="feature-icon">🎲</div>
+                <h3>Numbers Drop</h3>
+                <p>Watch them stack!</p>
+              </div>
+              <div
+                className="feature-card"
                 onClick={() => setActiveTab("phonics")}
               >
                 <div className="feature-icon">🎵</div>
@@ -79,6 +94,10 @@ function App() {
 
         {activeTab === "numbers" && (
           <NumbersGame onExit={() => setActiveTab("home")} />
+        )}
+
+        {activeTab === "numbersdrop" && (
+          <NumbersDropGame onExit={() => setActiveTab("home")} />
         )}
 
         {activeTab === "phonics" && (

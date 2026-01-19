@@ -1,0 +1,264 @@
+.numbers-drop-game {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.game-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.game-header h2 {
+  font-size: 2.5rem;
+  margin: 0;
+  color: #333;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.game-header p {
+  font-size: 1.2rem;
+  color: #666;
+  margin: 10px 0 0 0;
+}
+
+.game-controls {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.control-button {
+  padding: 12px 24px;
+  font-size: 1.1rem;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.control-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.control-button:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.control-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.start-button {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.stop-button {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  color: white;
+}
+
+.reset-button {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  color: white;
+}
+
+.exit-button {
+  background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+  color: white;
+}
+
+.game-status {
+  display: flex;
+  gap: 30px;
+  margin-bottom: 20px;
+  padding: 15px 30px;
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.status-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.status-label {
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 5px;
+  font-weight: 600;
+}
+
+.status-value {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #667eea;
+}
+
+.completion-message {
+  background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+  padding: 20px 40px;
+  border-radius: 15px;
+  text-align: center;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  animation: slideDown 0.5s ease-out;
+}
+
+.completion-message h3 {
+  font-size: 2rem;
+  margin: 0 0 10px 0;
+  color: #d4145a;
+}
+
+.completion-message p {
+  font-size: 1.2rem;
+  margin: 0;
+  color: #333;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.game-container {
+  position: relative;
+  width: 100%;
+  max-width: 600px;
+  height: 600px;
+  background: linear-gradient(to bottom, #e0f7fa 0%, #b2ebf2 100%);
+  border-radius: 15px;
+  border: 4px solid #0097a7;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}
+
+.background-number {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 20rem;
+  font-weight: bold;
+  color: rgba(255, 255, 255, 0.15);
+  z-index: 0;
+  pointer-events: none;
+  user-select: none;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.falling-block {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  transition: none;
+  z-index: 1;
+  border: 3px solid rgba(255, 255, 255, 0.5);
+}
+
+.block-number {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: white;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+  user-select: none;
+}
+
+.ground {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 50px;
+  background: linear-gradient(to bottom, #795548 0%, #5d4037 100%);
+  border-top: 4px solid #6d4c41;
+  z-index: 2;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .game-header h2 {
+    font-size: 2rem;
+  }
+
+  .game-header p {
+    font-size: 1rem;
+  }
+
+  .control-button {
+    padding: 10px 20px;
+    font-size: 1rem;
+  }
+
+  .game-container {
+    height: 500px;
+  }
+
+  .background-number {
+    font-size: 12rem;
+  }
+
+  .block-number {
+    font-size: 2rem;
+  }
+
+  .status-value {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .numbers-drop-game {
+    padding: 10px;
+  }
+
+  .game-header h2 {
+    font-size: 1.5rem;
+  }
+
+  .game-controls {
+    gap: 10px;
+  }
+
+  .control-button {
+    padding: 8px 16px;
+    font-size: 0.9rem;
+  }
+
+  .game-container {
+    height: 400px;
+  }
+
+  .background-number {
+    font-size: 8rem;
+  }
+
+  .block-number {
+    font-size: 1.5rem;
+  }
+}
