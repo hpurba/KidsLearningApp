@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import "./App.css";
 import AlphabetsGame from "./components/AlphabetsGame";
+import NumbersGame from "./components/NumbersGame";
+import PhonicsGame from "./components/PhonicsGame";
 
 function App() {
   const [activeTab, setActiveTab] = useState("home");
@@ -28,6 +30,12 @@ function App() {
           >
             🔢 Numbers
           </button>
+          <button
+            className={`nav-button ${activeTab === "phonics" ? "active" : ""}`}
+            onClick={() => setActiveTab("phonics")}
+          >
+            🎵 Phonics
+          </button>
         </nav>
       </header>
 
@@ -45,10 +53,21 @@ function App() {
                 <h3>Learn Alphabets</h3>
                 <p>From A to Z!</p>
               </div>
-              <div className="feature-card coming-soon">
+              <div
+                className="feature-card"
+                onClick={() => setActiveTab("numbers")}
+              >
                 <div className="feature-icon">🔢</div>
                 <h3>Learn Numbers</h3>
-                <p>Coming Soon!</p>
+                <p>From 0 to 20!</p>
+              </div>
+              <div
+                className="feature-card"
+                onClick={() => setActiveTab("phonics")}
+              >
+                <div className="feature-icon">🎵</div>
+                <h3>Learn Phonics</h3>
+                <p>Letter Sounds!</p>
               </div>
             </div>
           </div>
@@ -59,10 +78,11 @@ function App() {
         )}
 
         {activeTab === "numbers" && (
-          <div className="coming-soon-screen">
-            <h2>Coming Soon! 🚀</h2>
-            <p>This feature is under construction</p>
-          </div>
+          <NumbersGame onExit={() => setActiveTab("home")} />
+        )}
+
+        {activeTab === "phonics" && (
+          <PhonicsGame onExit={() => setActiveTab("home")} />
         )}
       </main>
     </div>
