@@ -61,27 +61,30 @@ const NumbersGame = ({ onExit }) => {
       };
     }
 
-    audio.play().catch((error) => {
-      console.warn(
-        `Audio file not found for ${number}, using text-to-speech fallback`,
-      );
-      // Fallback to text-to-speech if audio file doesn't exist
-      const utterance = new SpeechSynthesisUtterance(number.toString());
-      utterance.rate = 1;
-      utterance.pitch = 1;
-      utterance.volume = 1;
-      window.speechSynthesis.cancel();
-      window.speechSynthesis.speak(utterance);
+    // Add 0.5 second delay before playing
+    setTimeout(() => {
+      audio.play().catch((error) => {
+        console.warn(
+          `Audio file not found for ${number}, using text-to-speech fallback`,
+        );
+        // Fallback to text-to-speech if audio file doesn't exist
+        const utterance = new SpeechSynthesisUtterance(number.toString());
+        utterance.rate = 1;
+        utterance.pitch = 1;
+        utterance.volume = 1;
+        window.speechSynthesis.cancel();
+        window.speechSynthesis.speak(utterance);
 
-      // Repeat text-to-speech with 1 second pause
-      if (shouldRepeat) {
-        utterance.onend = () => {
-          timeoutRef.current = setTimeout(() => {
-            playNumberAudio(number, true);
-          }, 1000);
-        };
-      }
-    });
+        // Repeat text-to-speech with 1 second pause
+        if (shouldRepeat) {
+          utterance.onend = () => {
+            timeoutRef.current = setTimeout(() => {
+              playNumberAudio(number, true);
+            }, 1000);
+          };
+        }
+      });
+    }, 500);
   }, []);
 
   // Play number audio when number changes
@@ -117,17 +120,20 @@ const NumbersGame = ({ onExit }) => {
         onExit();
       };
 
-      celebrationAudio.play().catch((error) => {
-        console.warn(
-          "Could not play celebration audio, exiting after 3 seconds:",
-          error,
-        );
-        // Fallback: exit after 3 seconds if audio fails
-        setTimeout(() => {
-          setIsFinished(false);
-          onExit();
-        }, 3000);
-      });
+      // Add 0.5 second delay before playing
+      setTimeout(() => {
+        celebrationAudio.play().catch((error) => {
+          console.warn(
+            "Could not play celebration audio, exiting after 3 seconds:",
+            error,
+          );
+          // Fallback: exit after 3 seconds if audio fails
+          setTimeout(() => {
+            setIsFinished(false);
+            onExit();
+          }, 3000);
+        });
+      }, 500);
 
       return () => {
         celebrationAudio.pause();

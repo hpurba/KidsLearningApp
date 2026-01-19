@@ -3,7 +3,7 @@ import "./NumbersDropGame.css";
 
 // Number to audio file mapping (same as NumbersGame)
 const numberAudioMap = {
-  0: "/audio/numbers/0.m4a",
+  //   0: "/audio/numbers/0.m4a",
   1: "/audio/numbers/1.m4a",
   2: "/audio/numbers/2.m4a",
   3: "/audio/numbers/3.m4a",
@@ -27,7 +27,7 @@ const numberAudioMap = {
 };
 
 const colors = [
-  "#FF6B6B",
+  //   "#FF6B6B",
   "#4ECDC4",
   "#45B7D1",
   "#FFA07A",
@@ -51,12 +51,13 @@ const colors = [
 
 const NumbersDropGame = ({ onExit }) => {
   const [blocks, setBlocks] = useState([]);
-  const [currentNumber, setCurrentNumber] = useState(0);
+  const [currentNumber, setCurrentNumber] = useState(1);
   const [isFinished, setIsFinished] = useState(false);
   const audioRef = useRef(null);
   const canvasRef = useRef(null);
   const animationFrameRef = useRef(null);
   const gameContainerRef = useRef(null);
+  const spaceKeyHeldRef = useRef(false);
 
   // Physics constants
   const GRAVITY = 0.5;
@@ -77,17 +78,20 @@ const NumbersDropGame = ({ onExit }) => {
     const audio = new Audio(audioPath);
     audioRef.current = audio;
 
-    audio.play().catch((error) => {
-      console.warn(
-        `Audio file not found for ${number}, using text-to-speech fallback`,
-      );
-      const utterance = new SpeechSynthesisUtterance(number.toString());
-      utterance.rate = 1;
-      utterance.pitch = 1;
-      utterance.volume = 1;
-      window.speechSynthesis.cancel();
-      window.speechSynthesis.speak(utterance);
-    });
+    // Add 0.5 second delay before playing
+    setTimeout(() => {
+      audio.play().catch((error) => {
+        console.warn(
+          `Audio file not found for ${number}, using text-to-speech fallback`,
+        );
+        const utterance = new SpeechSynthesisUtterance(number.toString());
+        utterance.rate = 1;
+        utterance.pitch = 1;
+        utterance.volume = 1;
+        window.speechSynthesis.cancel();
+        window.speechSynthesis.speak(utterance);
+      });
+    }, 500);
   }, []);
 
   // Drop a new block
@@ -227,16 +231,25 @@ const NumbersDropGame = ({ onExit }) => {
   // Spacebar handler to drop blocks
   useEffect(() => {
     const handleKeyPress = (event) => {
-      if (event.code === "Space" && !isFinished) {
+      if (event.code === "Space" && !isFinished && !spaceKeyHeldRef.current) {
         event.preventDefault();
+        spaceKeyHeldRef.current = true;
         dropBlock();
       }
     };
 
+    const handleKeyUp = (event) => {
+      if (event.code === "Space") {
+        spaceKeyHeldRef.current = false;
+      }
+    };
+
     window.addEventListener("keydown", handleKeyPress);
+    window.addEventListener("keyup", handleKeyUp);
 
     return () => {
       window.removeEventListener("keydown", handleKeyPress);
+      window.removeEventListener("keyup", handleKeyUp);
     };
   }, [dropBlock, isFinished]);
 
@@ -269,12 +282,14 @@ const NumbersDropGame = ({ onExit }) => {
 
       <div className="game-status">
         <div className="status-item">
-          <span className="status-label">Current:</span>
-          <span className="status-value">{currentNumber}</span>
+          <span className="status-label">Count:</span>
+          <span className="status-value">{blocks.length}</span>
         </div>
         <div className="status-item">
-          <span className="status-label">Blocks:</span>
-          <span className="status-value">{blocks.length}</span>
+          <span className="status-label">Next:</span>
+          <span className="status-value">
+            {currentNumber <= 20 ? currentNumber : "Done!"}
+          </span>
         </div>
       </div>
 
@@ -287,7 +302,7 @@ const NumbersDropGame = ({ onExit }) => {
 
       <div className="game-container" ref={gameContainerRef}>
         <div className="background-number">
-          {currentNumber <= 20 ? currentNumber : 20}
+          {currentNumber <= 20 ? currentNumber - 1 : 20}
         </div>
         {blocks.map((block) => (
           <div
