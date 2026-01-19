@@ -4,6 +4,7 @@ import AlphabetsGame from "./components/AlphabetsGame";
 import NumbersGame from "./components/NumbersGame";
 import NumbersDropGame from "./components/NumbersDropGame";
 import PhonicsGame from "./components/PhonicsGame";
+import RandomLettersGame from "./components/RandomLettersGame";
 
 function App() {
   const [activeTab, setActiveTab] = useState("home");
@@ -42,6 +43,12 @@ function App() {
             onClick={() => setActiveTab("phonics")}
           >
             🎵 Phonics
+          </button>
+          <button
+            className={`nav-button ${activeTab === "random" ? "active" : ""}`}
+            onClick={() => setActiveTab("random")}
+          >
+            🎵🎲 Random Phonics
           </button>
         </nav>
       </header>
@@ -84,6 +91,14 @@ function App() {
                 <h3>Learn Phonics</h3>
                 <p>Letter Sounds!</p>
               </div>
+              <div
+                className="feature-card"
+                onClick={() => setActiveTab("random")}
+              >
+                <div className="feature-icon">🎵🎲</div>
+                <h3>Random Phonics</h3>
+                <p>Shuffle & Learn!</p>
+              </div>
             </div>
           </div>
         )}
@@ -102,6 +117,10 @@ function App() {
 
         {activeTab === "phonics" && (
           <PhonicsGame onExit={() => setActiveTab("home")} />
+        )}
+
+        {activeTab === "random" && (
+          <RandomLettersGame onExit={() => setActiveTab("home")} />
         )}
       </main>
     </div>
