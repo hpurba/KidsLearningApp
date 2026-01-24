@@ -148,6 +148,15 @@ const PhonicsGame = ({ onExit }) => {
     }
   }, [isFinished, onExit]);
 
+  const advanceLetter = useCallback(() => {
+    if (currentLetterIndex < alphabet.length - 1) {
+      setCurrentLetterIndex((prev) => prev + 1);
+    } else {
+      setIsPlaying(false);
+      setIsFinished(true);
+    }
+  }, [currentLetterIndex, alphabet.length]);
+
   // Handle spacebar and arrow key presses
   useEffect(() => {
     if (!isPlaying) return;
@@ -158,14 +167,7 @@ const PhonicsGame = ({ onExit }) => {
 
       if (event.code === "Space" || event.code === "ArrowRight") {
         event.preventDefault();
-
-        if (currentLetterIndex < alphabet.length - 1) {
-          setCurrentLetterIndex((prev) => prev + 1);
-        } else {
-          // Game finished, show celebration
-          setIsPlaying(false);
-          setIsFinished(true);
-        }
+        advanceLetter();
       } else if (event.code === "ArrowLeft") {
         event.preventDefault();
 
@@ -177,7 +179,7 @@ const PhonicsGame = ({ onExit }) => {
 
     window.addEventListener("keydown", handleKeyPress);
     return () => window.removeEventListener("keydown", handleKeyPress);
-  }, [isPlaying, currentLetterIndex, alphabet.length, onExit]);
+  }, [isPlaying, currentLetterIndex, alphabet.length, onExit, advanceLetter]);
 
   const startGame = () => {
     setCurrentLetterIndex(0);
@@ -237,8 +239,9 @@ const PhonicsGame = ({ onExit }) => {
         <h2>🎵 Learn Phonics Sounds! 🎵</h2>
         <p>Press the button to start</p>
         <p className="phonics-instructions">
-          Use the <span className="phonics-key-highlight">SPACEBAR</span> or{" "}
-          <span className="phonics-key-highlight">ARROW KEYS</span> to navigate
+          Use the <span className="phonics-key-highlight">SPACEBAR</span>,{" "}
+          <span className="phonics-key-highlight">ARROW KEYS</span>, or tap the
+          letter card to navigate
         </p>
         <button className="phonics-start-button" onClick={startGame}>
           🎮 Start Learning!
@@ -258,7 +261,13 @@ const PhonicsGame = ({ onExit }) => {
         />
       </div>
 
-      <div className="phonics-letter-display">
+      <div
+        className="phonics-letter-display"
+        onClick={advanceLetter}
+        role="button"
+        tabIndex={0}
+        aria-label="Next letter"
+      >
         <div className="phonics-letter uppercase">{currentLetter}</div>
         <div className="phonics-letter lowercase">
           {currentLetter.toLowerCase()}
@@ -270,8 +279,9 @@ const PhonicsGame = ({ onExit }) => {
           Letter {currentLetterIndex + 1} of {alphabet.length}
         </p>
         <p className="phonics-spacebar-hint">
-          Press <span className="phonics-key-highlight">SPACEBAR</span> or{" "}
-          <span className="phonics-key-highlight">ARROWS</span> to navigate
+          Press <span className="phonics-key-highlight">SPACEBAR</span>,{" "}
+          <span className="phonics-key-highlight">ARROWS</span>, or tap the card
+          to navigate
         </p>
       </div>
     </div>

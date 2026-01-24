@@ -89,7 +89,7 @@ const AlphabetsGame = ({ onExit }) => {
           };
         }
       });
-    }, 500);
+    });
   }, []);
 
   // Play letter audio when letter changes
@@ -125,7 +125,6 @@ const AlphabetsGame = ({ onExit }) => {
         onExit();
       };
 
-      // Add 0.5 second delay before playing
       setTimeout(() => {
         celebrationAudio.play().catch((error) => {
           console.warn(
@@ -138,7 +137,7 @@ const AlphabetsGame = ({ onExit }) => {
             onExit();
           }, 3000);
         });
-      }, 500);
+      });
 
       return () => {
         celebrationAudio.pause();
@@ -147,6 +146,15 @@ const AlphabetsGame = ({ onExit }) => {
       };
     }
   }, [isFinished, onExit]);
+
+  const advanceLetter = useCallback(() => {
+    if (currentLetterIndex < alphabet.length - 1) {
+      setCurrentLetterIndex((prev) => prev + 1);
+    } else {
+      setIsPlaying(false);
+      setIsFinished(true);
+    }
+  }, [currentLetterIndex, alphabet.length]);
 
   // Handle spacebar and arrow key presses
   useEffect(() => {
@@ -158,14 +166,7 @@ const AlphabetsGame = ({ onExit }) => {
 
       if (event.code === "Space" || event.code === "ArrowRight") {
         event.preventDefault();
-
-        if (currentLetterIndex < alphabet.length - 1) {
-          setCurrentLetterIndex((prev) => prev + 1);
-        } else {
-          // Game finished, show celebration
-          setIsPlaying(false);
-          setIsFinished(true);
-        }
+        advanceLetter();
       } else if (event.code === "ArrowLeft") {
         event.preventDefault();
 
@@ -177,7 +178,7 @@ const AlphabetsGame = ({ onExit }) => {
 
     window.addEventListener("keydown", handleKeyPress);
     return () => window.removeEventListener("keydown", handleKeyPress);
-  }, [isPlaying, currentLetterIndex, alphabet.length, onExit]);
+  }, [isPlaying, currentLetterIndex, alphabet.length, onExit, advanceLetter]);
 
   const startGame = () => {
     setCurrentLetterIndex(0);
@@ -235,8 +236,8 @@ const AlphabetsGame = ({ onExit }) => {
         <h2>🔤 Learn Your ABCs! 🔤</h2>
         <p>Press the button to start</p>
         <p className="instructions">
-          Use the <span className="key-highlight">SPACEBAR</span> to move to the
-          next letter
+          Use the <span className="key-highlight">SPACEBAR</span> or tap the
+          letter card to move to the next letter
         </p>
         <button className="start-button" onClick={startGame}>
           🎮 Start Learning!
@@ -256,7 +257,13 @@ const AlphabetsGame = ({ onExit }) => {
         />
       </div>
 
-      <div className="letter-display">
+      <div
+        className="letter-display"
+        onClick={advanceLetter}
+        role="button"
+        tabIndex={0}
+        aria-label="Next letter"
+      >
         <div className="letter uppercase">{currentLetter}</div>
         <div className="letter lowercase">{currentLetter.toLowerCase()}</div>
       </div>
@@ -266,7 +273,8 @@ const AlphabetsGame = ({ onExit }) => {
           Letter {currentLetterIndex + 1} of {alphabet.length}
         </p>
         <p className="spacebar-hint">
-          Press <span className="key-highlight">SPACEBAR</span> for next letter
+          Press <span className="key-highlight">SPACEBAR</span> or tap the
+          letter card for next letter
         </p>
       </div>
     </div>

@@ -122,6 +122,11 @@ const NumbersDropGame = ({ onExit }) => {
     setCurrentNumber((prev) => prev + 1);
   }, [currentNumber, playNumberAudio]);
 
+  const handleAdvanceClick = useCallback(() => {
+    if (isFinished) return;
+    dropBlock();
+  }, [dropBlock, isFinished]);
+
   // Check collision between two blocks
   const checkCollision = (block1, block2) => {
     const dx = block1.x - block2.x;
@@ -300,7 +305,14 @@ const NumbersDropGame = ({ onExit }) => {
         </div>
       )}
 
-      <div className="game-container" ref={gameContainerRef}>
+      <div
+        className="game-container"
+        ref={gameContainerRef}
+        onClick={handleAdvanceClick}
+        role="button"
+        tabIndex={0}
+        aria-label="Drop next number"
+      >
         <div className="background-number">
           {currentNumber <= 20 ? currentNumber - 1 : 20}
         </div>

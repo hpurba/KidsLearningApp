@@ -165,6 +165,15 @@ const RandomLettersGame = ({ onExit }) => {
     }
   }, [isFinished, onExit]);
 
+  const advanceLetter = useCallback(() => {
+    if (currentLetterIndex < alphabet.length - 1) {
+      setCurrentLetterIndex((prev) => prev + 1);
+    } else {
+      setIsPlaying(false);
+      setIsFinished(true);
+    }
+  }, [currentLetterIndex, alphabet.length]);
+
   // Handle spacebar and arrow key presses
   useEffect(() => {
     if (!isPlaying) return;
@@ -175,14 +184,7 @@ const RandomLettersGame = ({ onExit }) => {
 
       if (event.code === "Space" || event.code === "ArrowRight") {
         event.preventDefault();
-
-        if (currentLetterIndex < alphabet.length - 1) {
-          setCurrentLetterIndex((prev) => prev + 1);
-        } else {
-          // Game finished, show celebration
-          setIsPlaying(false);
-          setIsFinished(true);
-        }
+        advanceLetter();
       } else if (event.code === "ArrowLeft") {
         event.preventDefault();
 
@@ -194,7 +196,7 @@ const RandomLettersGame = ({ onExit }) => {
 
     window.addEventListener("keydown", handleKeyPress);
     return () => window.removeEventListener("keydown", handleKeyPress);
-  }, [isPlaying, currentLetterIndex, alphabet.length, onExit]);
+  }, [isPlaying, currentLetterIndex, alphabet.length, onExit, advanceLetter]);
 
   const startGame = () => {
     setCurrentLetterIndex(0);
@@ -254,9 +256,9 @@ const RandomLettersGame = ({ onExit }) => {
         <h2>🎵🎲 Random Phonics! 🎵🎲</h2>
         <p>Learn phonics in a random order</p>
         <p className="random-letters-instructions">
-          Use the <span className="random-letters-key-highlight">SPACEBAR</span>{" "}
-          or <span className="random-letters-key-highlight">ARROW KEYS</span> to
-          navigate
+          Use the <span className="random-letters-key-highlight">SPACEBAR</span>
+          , <span className="random-letters-key-highlight">ARROW KEYS</span>, or
+          tap the letter card to navigate
         </p>
         <button className="random-letters-start-button" onClick={startGame}>
           🎮 Start Learning!
@@ -276,7 +278,13 @@ const RandomLettersGame = ({ onExit }) => {
         />
       </div>
 
-      <div className="random-letters-letter-display">
+      <div
+        className="random-letters-letter-display"
+        onClick={advanceLetter}
+        role="button"
+        tabIndex={0}
+        aria-label="Next letter"
+      >
         <div className="random-letters-letter uppercase">{currentLetter}</div>
         <div className="random-letters-letter lowercase">
           {currentLetter.toLowerCase()}
@@ -288,9 +296,9 @@ const RandomLettersGame = ({ onExit }) => {
           Letter {currentLetterIndex + 1} of {alphabet.length}
         </p>
         <p className="random-letters-spacebar-hint">
-          Press <span className="random-letters-key-highlight">SPACEBAR</span>{" "}
-          or <span className="random-letters-key-highlight">ARROWS</span> to
-          navigate
+          Press <span className="random-letters-key-highlight">SPACEBAR</span>,{" "}
+          <span className="random-letters-key-highlight">ARROWS</span>, or tap
+          the card to navigate
         </p>
       </div>
     </div>

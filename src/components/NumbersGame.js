@@ -143,6 +143,15 @@ const NumbersGame = ({ onExit }) => {
     }
   }, [isFinished, onExit]);
 
+  const advanceNumber = useCallback(() => {
+    if (currentNumberIndex < numbers.length - 1) {
+      setCurrentNumberIndex((prev) => prev + 1);
+    } else {
+      setIsPlaying(false);
+      setIsFinished(true);
+    }
+  }, [currentNumberIndex, numbers.length]);
+
   // Handle spacebar and arrow key presses
   useEffect(() => {
     if (!isPlaying) return;
@@ -153,14 +162,7 @@ const NumbersGame = ({ onExit }) => {
 
       if (event.code === "Space" || event.code === "ArrowRight") {
         event.preventDefault();
-
-        if (currentNumberIndex < numbers.length - 1) {
-          setCurrentNumberIndex((prev) => prev + 1);
-        } else {
-          // Game finished, show celebration
-          setIsPlaying(false);
-          setIsFinished(true);
-        }
+        advanceNumber();
       } else if (event.code === "ArrowLeft") {
         event.preventDefault();
 
@@ -172,7 +174,7 @@ const NumbersGame = ({ onExit }) => {
 
     window.addEventListener("keydown", handleKeyPress);
     return () => window.removeEventListener("keydown", handleKeyPress);
-  }, [isPlaying, currentNumberIndex, numbers.length, onExit]);
+  }, [isPlaying, currentNumberIndex, numbers.length, onExit, advanceNumber]);
 
   const startGame = () => {
     setCurrentNumberIndex(0);
@@ -232,8 +234,9 @@ const NumbersGame = ({ onExit }) => {
         <h2>🔢 Learn Your Numbers! 🔢</h2>
         <p>Press the button to start</p>
         <p className="numbers-instructions">
-          Use the <span className="numbers-key-highlight">SPACEBAR</span> or{" "}
-          <span className="numbers-key-highlight">ARROW KEYS</span> to navigate
+          Use the <span className="numbers-key-highlight">SPACEBAR</span>,{" "}
+          <span className="numbers-key-highlight">ARROW KEYS</span>, or tap the
+          number card to navigate
         </p>
         <button className="numbers-start-button" onClick={startGame}>
           🎮 Start Learning!
@@ -253,7 +256,13 @@ const NumbersGame = ({ onExit }) => {
         />
       </div>
 
-      <div className="numbers-display">
+      <div
+        className="numbers-display"
+        onClick={advanceNumber}
+        role="button"
+        tabIndex={0}
+        aria-label="Next number"
+      >
         <div className="number-large">{currentNumber}</div>
       </div>
 
@@ -262,8 +271,9 @@ const NumbersGame = ({ onExit }) => {
           Number {currentNumberIndex} of {numbers.length}
         </p>
         <p className="numbers-hint">
-          Press <span className="numbers-key-highlight">SPACEBAR</span> or{" "}
-          <span className="numbers-key-highlight">ARROWS</span> to navigate
+          Press <span className="numbers-key-highlight">SPACEBAR</span>,{" "}
+          <span className="numbers-key-highlight">ARROWS</span>, or tap the card
+          to navigate
         </p>
       </div>
     </div>
